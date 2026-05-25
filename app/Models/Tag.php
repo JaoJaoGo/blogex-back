@@ -20,6 +20,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  *
  * @property int $id
  * @property string $name
+ * @property string|null $icon
+ * @property string|null $color
  *
  * @property-read \App\Models\Post[] $posts
  *
@@ -48,6 +50,8 @@ class Tag extends Model
      */
     protected $fillable = [
         'name',
+        'icon',
+        'color',
     ];
 
     /**

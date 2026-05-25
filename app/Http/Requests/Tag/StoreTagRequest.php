@@ -4,6 +4,7 @@ namespace App\Http\Requests\Tag;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use App\Http\Services\Tag\TagIconCatalog;
 
 /**
  * Class StoreTagRequest
@@ -44,6 +45,8 @@ class StoreTagRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
+            'icon' => ['required', 'string', Rule::in(TagIconCatalog::keys()),],
+            'color' => ['required', 'string', 'regex:/^#[A-Fa-f0-9]{6}$/'],
         ];
     }
 
@@ -56,6 +59,16 @@ class StoreTagRequest extends FormRequest
     {
         return [
             'name.required' => 'O nome da tag é obrigatório.',
+            'name.string' => 'O nome da tag deve ser uma string.',
+            'name.max' => 'O nome da tag deve ter no máximo 255 caracteres.',
+
+            'icon.required' => 'O ícone da tag é obrigatório.',
+            'icon.string' => 'O ícone da tag deve ser uma string.',
+            'icon.max' => 'O ícone da tag deve ter no máximo 100 caracteres.',
+
+            'color.required' => 'A cor da tag é obrigatória.',
+            'color.string' => 'A cor da tag deve ser uma string.',
+            'color.regex' => 'A cor da tag deve estar no formato hexadecimal. Ex: #8b5cf6.',
         ];
     }
 
@@ -76,6 +89,14 @@ class StoreTagRequest extends FormRequest
 
         if(isset($data['name'])) {
             $data['name'] = trim($data['name']);
+        }
+
+        if (isset($data['icon'])) {
+            $data['icon'] = trim($data['icon']);
+        }
+
+        if (isset($data['color'])) {
+            $data['color'] = strtolower(trim($data['color']));
         }
 
         return $data;

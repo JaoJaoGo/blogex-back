@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\Post\PostController;
+use App\Http\Controllers\Tag\TagIconController;
 use App\Http\Controllers\Tag\TagController;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
@@ -67,6 +68,7 @@ Route::prefix('posts')->group(function () {
  */
 Route::prefix('tags')->group(function () {
     Route::get('/', [TagController::class, 'index']);
+    Route::get('/icons', [TagIconController::class, 'index']);
     Route::get('/{id}', [TagController::class, 'show'])
         ->whereNumber('id');
 });

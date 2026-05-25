@@ -34,7 +34,12 @@ class PostListResource extends JsonResource
             'author' => $this->author,
 
             'tags' => $this->whenLoaded('tags', fn () =>
-                $this->tags->pluck('name')
+                $this->tags->map(fn ($tag) => [
+                    'id' => $tag->id,
+                    'name' => $tag->name,
+                    'icon' => $tag->icon,
+                    'color' => $tag->color,
+                ])
             ),
 
             'updatedAt' => $this->updated_at?->toISOString(),
