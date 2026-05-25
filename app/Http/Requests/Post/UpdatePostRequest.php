@@ -32,6 +32,24 @@ class UpdatePostRequest extends FormRequest
     }
 
     /**
+     * Prepara os dados para validação.
+     * 
+     * Converte o parâmetro remove_image para booleano.
+     */
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('remove_image')) {
+            $this->merge([
+                'remove_image' => filter_var(
+                    $this->input('remove_image'),
+                    FILTER_VALIDATE_BOOLEAN,
+                    FILTER_NULL_ON_FAILURE
+                ),
+            ]);
+        }
+    }
+
+    /**
      * Retorna as regras de validação aplicáveis à requisição.
      *
      * Campos validados:
@@ -51,11 +69,9 @@ class UpdatePostRequest extends FormRequest
             'subtitle' => ['nullable', 'string', 'max:255'],
             'content' => ['sometimes', 'string'],
             'author' => ['sometimes', 'string', 'max:255'],
-
             // Upload
             'image' => ['nullable', 'image', 'max:2048'],
             'remove_image' => ['sometimes', 'boolean'],
-
             // Tags
             'tags' => ['sometimes', 'array', 'min:1'],
             'tags.*' => ['string', 'max:50'],
@@ -86,13 +102,13 @@ class UpdatePostRequest extends FormRequest
     {
         $data = parent::validated($key, $default);
 
-        if ($key !== null || ! is_array($data)) {
+        if ($key !== null || !is_array($data)) {
             return $data;
         }
 
         if (isset($data['tags'])) {
             $data['tags'] = collect($data['tags'])
-                ->map(fn ($tag) => trim(mb_strtolower($tag)))
+                ->map(fn($tag) => trim(mb_strtolower($tag)))
                 ->unique()
                 ->values()
                 ->toArray();

@@ -2,8 +2,8 @@
 
 namespace App\Http\Resources\Post;
 
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Request;
 
 /**
  * Class PostResource
@@ -23,7 +23,7 @@ class PostResource extends JsonResource
 {
     /**
      * Transforma o resource em um array.
-     * 
+     *
      * @return array<string, mixed>
      */
     public function toArray(Request $request): array
@@ -35,11 +35,13 @@ class PostResource extends JsonResource
             'content' => $this->content,
             'image' => $this->image,
             'author' => $this->author,
-
-            'tags' => $this->whenLoaded('tags', fn () =>
-                $this->tags->pluck('name')
-            ),
-
+            'tags' => $this->whenLoaded('tags', fn() =>
+                $this->tags->map(fn($tag) => [
+                    'id' => $tag->id,
+                    'name' => $tag->name,
+                    'icon' => $tag->icon,
+                    'color' => $tag->color,
+                ])),
             'createdAt' => $this->created_at?->toISOString(),
             'updatedAt' => $this->updated_at?->toISOString(),
         ];
