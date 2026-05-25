@@ -1,59 +1,195 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Blogex - Backend
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Backend da aplicação Blogex, um sistema de blog com suporte a múltiplos autores, tags e editor de texto rico. Desenvolvido com Laravel 12, Sanctum para autenticação SPA e arquitetura orientada a serviços.
 
-## About Laravel
+## Stack Tecnológica
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **PHP 8.2+** - Linguagem principal
+- **Laravel 12** - Framework PHP
+- **Laravel Sanctum** - Autenticação SPA (API tokens e sessões)
+- **SQLite** - Banco de dados (configurado para desenvolvimento)
+- **PHPUnit 11** - Testes automatizados
+- **Laravel Pint** - Linting e formatação de código
+- **Laravel Sail** - Docker para desenvolvimento local
+- **Laravel Pail** - Logs em tempo real
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Estrutura do Projeto
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+```
+app/
+├── Console/
+│   └── Commands/         # Comandos Artisan customizados
+├── Http/
+│   ├── Controllers/      # Controladores da API
+│   │   ├── Auth/         # Autenticação e usuários
+│   │   ├── Post/         # Gerenciamento de posts
+│   │   └── Tag/          # Gerenciamento de tags
+│   ├── Requests/         # FormRequest para validação
+│   ├── Resources/        # API Resources para formatação JSON
+│   ├── Responses/        # Respostas padronizadas
+│   ├── Services/         # Lógica de negócio
+│   │   ├── Auth/         # Serviços de autenticação
+│   │   ├── Post/         # Serviços de posts
+│   │   └── Tag/          # Serviços de tags
+│   └── Repositories/     # Padrão Repository (opcional)
+├── Models/               # Models Eloquent
+│   ├── User.php
+│   ├── Post.php
+│   └── Tag.php
+└── Providers/            # Service Providers
 
-## Learning Laravel
+database/
+├── factories/            # Model Factories para testes
+├── migrations/           # Migrations do banco de dados
+└── seeders/              # Seeders para dados iniciais
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+routes/
+├── api.php               # Rotas da API REST
+├── web.php               # Rotas web (CSRF, sessions)
+└── console.php           # Comandos e scheduling (Schedule::command)
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Funcionalidades
 
-## Laravel Sponsors
+- **Autenticação SPA** com Laravel Sanctum (cookies e stateful domains)
+- **CRUD de Posts** com validação e autorização
+- **Sistema de Tags** com suporte a ícones e cores customizáveis
+- **Gerenciamento de Usuários** com registro e login
+- **API RESTful** com Resources padronizados
+- **Validação centralizada** com FormRequest
+- **Arquitetura de Serviços** para separação de responsabilidades
+- **Respostas padronizadas** para consistência da API
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Scripts Composer
 
-### Premium Partners
+```bash
+composer setup           # Setup completo do projeto
+composer dev             # Inicia servidor, queue, logs e Vite
+composer test            # Executa testes automatizados
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## Variáveis de Ambiente
 
-## Contributing
+Configure as variáveis no arquivo `.env`:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```env
+APP_NAME=Laravel
+APP_ENV=local
+APP_KEY=
+APP_DEBUG=true
+APP_URL=http://localhost
+APP_FRONT_URL=https://blogex.test
 
-## Code of Conduct
+SANCTUM_STATEFUL_DOMAINS=blogex.test
+AUTH_GUARD=web
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+APP_LOCALE=pt_BR
+APP_FALLBACK_LOCALE=pt_BR
+APP_FAKER_LOCALE=pt_BR
 
-## Security Vulnerabilities
+DB_CONNECTION=sqlite
+SESSION_DRIVER=database
+QUEUE_CONNECTION=database
+CACHE_STORE=database
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Configuração HTTPS Local
 
-## License
+Para desenvolvimento com o frontend React, configure o domínio local:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 1. Configure o hosts file
+
+Adicione ao seu arquivo `hosts` (Windows: `C:\Windows\System32\drivers\etc\hosts`):
+```
+127.0.0.1 blogex.test
+```
+
+### 2. Configure o .env
+
+```env
+APP_URL=https://blogex.test
+APP_FRONT_URL=https://blogex.test
+SANCTUM_STATEFUL_DOMAINS=blogex.test
+```
+
+## Desenvolvimento
+
+### Setup Inicial
+
+1. Instale as dependências:
+```bash
+composer install
+```
+
+2. Configure o ambiente:
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+3. Execute as migrations:
+```bash
+php artisan migrate
+```
+
+4. Inicie o servidor de desenvolvimento:
+```bash
+php artisan serve
+```
+
+### Modo Desenvolvimento Completo
+
+Para iniciar todos os serviços (servidor, queue, logs, Vite):
+```bash
+composer dev
+```
+
+### Executar Testes
+
+```bash
+composer test
+# ou
+php artisan test
+```
+
+## Estrutura de API
+
+### Autenticação
+- `POST /api/login` - Login de usuário
+- `POST /api/register` - Registro de novo usuário
+- `POST /api/logout` - Logout (autenticado)
+- `GET /api/user` - Dados do usuário autenticado
+
+### Posts
+- `GET /api/posts` - Listar posts
+- `GET /api/posts/{id}` - Detalhes do post
+- `POST /api/posts` - Criar post (autenticado)
+- `PUT /api/posts/{id}` - Atualizar post (autenticado)
+- `DELETE /api/posts/{id}` - Deletar post (autenticado)
+
+### Tags
+- `GET /api/tags` - Listar tags
+- `GET /api/tags/{id}` - Detalhes da tag
+- `POST /api/tags` - Criar tag (autenticado)
+- `PUT /api/tags/{id}` - Atualizar tag (autenticado)
+- `DELETE /api/tags/{id}` - Deletar tag (autenticado)
+- `PUT /api/tags/{id}/icon` - Atualizar ícone da tag (autenticado)
+
+## Boas Práticas Implementadas
+
+- **FormRequest** para validação centralizada e segura
+- **API Resources** para padronização de respostas JSON
+- **Services** para separação de lógica de negócio
+- **Controllers enxutos** (máximo 50 linhas)
+- **Eager loading** para evitar N+1 queries
+- **Middleware de autenticação** e throttling
+- **Policies** para autorização de recursos
+- **Migrations** versionadas para controle de schema
+
+## Scheduling
+
+O scheduling de tarefas é configurado em `routes/console.php` usando `Schedule::command()`, conforme as diretrizes do projeto.
+
+## Integração com Frontend
+
+O backend se integra com o frontend React através da API REST em `/api`. A autenticação usa cookies e Laravel Sanctum com stateful domains configurados para o domínio do frontend.
