@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources\Post;
 
+use App\Models\User;
+use App\Support\AuthorMap;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Request;
 
@@ -28,6 +30,9 @@ class PostResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $userId = AuthorMap::userIdFromAuthor($this->author);
+        $user = $userId ? User::find($userId) : null;
+
         return [
             'id' => $this->id,
             'title' => $this->title,
@@ -35,6 +40,13 @@ class PostResource extends JsonResource
             'content' => $this->content,
             'image' => $this->image,
             'author' => $this->author,
+            'user' => [
+                'id' => $user?->id,
+                'name' => $user?->name,
+                'profile_photo_url' => $user?->profile_photo
+                    ? asset('storage/' . $user->profile_photo)
+                    : null,
+            ],
             'tags' => $this->whenLoaded('tags', fn() =>
                 $this->tags->map(fn($tag) => [
                     'id' => $tag->id,
