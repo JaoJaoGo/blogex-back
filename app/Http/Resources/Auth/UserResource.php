@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Auth;
 
+use App\Support\AuthorMap;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -26,11 +27,17 @@ class UserResource extends JsonResource
      *
      * Campos retornados:
      * - id: identificador único do usuário
+     * - author: autor do usuário
      * - name: nome completo
      * - age: idade
      * - birth_date: data de nascimento
      * - phone: telefone
      * - email: e-mail
+     * - profile_photo: foto de perfil
+     * - profile_photo_url: URL da foto de perfil
+     * - description: descrição
+     * - linkedin: link do linkedin
+     * - github: link do github
      * - created_at: data de criação do registro
      *
      * @param Request $request Requisição HTTP atual
@@ -41,11 +48,17 @@ class UserResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'author' => AuthorMap::authorFromUserId($this->id),
             'name' => $this->name,
             'age' => $this->age,
             'birth_date' => $this->birth_date,
             'phone' => $this->phone,
             'email' => $this->email,
+            'profile_photo' => $this->profile_photo,
+            'profile_photo_url' => $this->profile_photo ? asset('storage/' . $this->profile_photo) : null,
+            'description' => $this->description,
+            'linkedin' => $this->linkedin,
+            'github' => $this->github,
             'created_at' => $this->created_at->toISOString(),
         ];
     }

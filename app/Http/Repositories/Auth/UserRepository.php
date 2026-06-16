@@ -45,4 +45,19 @@ class UserRepository
     {
         return User::count();
     }
+
+    /**
+     * Atualiza os dados de um usuário existente.
+     * 
+     * @param User $user Instância do usuário a ser atualizado
+     * @param array<string, mixed> $data Dados a serem atualizados
+     * 
+     * @return User Instância do usuário atualizado
+     */
+    public function update(User $user, array $data): User
+    {
+        $user->update($data);
+
+        return $user;
+    }
 }

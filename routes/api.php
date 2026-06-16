@@ -1,9 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Support\AuthorMap;
+
 // Controllers
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\UserController;
+use App\Http\Controllers\Auth\ProfileController;
+use App\Http\Controllers\Auth\PublicAuthorController;
+use App\Http\Controllers\Experience\ExperienceController;
 use App\Http\Controllers\Post\PostController;
 use App\Http\Controllers\Tag\TagIconController;
 use App\Http\Controllers\Tag\TagController;
@@ -61,6 +66,12 @@ Route::prefix('posts')->group(function () {
 });
 
 /**
+ * Rota pública para buscar autor pelo nome.
+ */
+Route::get('/authors/{author}', [PublicAuthorController::class, 'show'])
+    ->whereIn('author', array_keys(AuthorMap::all()));
+
+/**
  * Rotas de Tag
  *
  * Rotas públicas que permitem o acesso às tags
@@ -84,12 +95,20 @@ Route::prefix('tags')->group(function () {
  */
 Route::middleware('auth:sanctum')->group(function () {
     /**
-     * Retorna os dados do usuário autenticado.
-     *
-     * Utiliza a sessão autenticada via cookies (Sanctum SPA)
-     * para identificar o usuário logado.
+     * Perfil do usuário
+     * 
+     * Rotas para gerenciar o perfil do usuário autenticado.
      */
     Route::get('/me', [AuthController::class, 'me']);
+    Route::post('/me/profile', [ProfileController::class, 'update']);
+    Route::put('/me/password', [ProfileController::class, 'updatePassword']);
+
+    Route::prefix('me/experiences')->group(function () {
+        Route::get('/', [ExperienceController::class, 'index']);
+        Route::post('/', [ExperienceController::class, 'store']);
+        Route::put('/{id}', [ExperienceController::class, 'update'])->whereNumber('id');
+        Route::delete('/{id}', [ExperienceController::class, 'destroy'])->whereNumber('id');
+    });
 
     /**
      * Realiza o logout do usuário autenticado.

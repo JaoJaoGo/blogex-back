@@ -27,6 +27,10 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string $birth_date
  * @property string $phone
  * @property string $email
+ * @property string|null $profile_photo
+ * @property string|null $description
+ * @property string|null $linkedin
+ * @property string|null $github
  * @property \Illuminate\Support\Carbon|null $email_verified_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -57,6 +61,10 @@ class User extends Authenticatable
         'birth_date',
         'phone',
         'email',
+        'profile_photo',
+        'description',
+        'linkedin',
+        'github',
         'password',
     ];
 
@@ -97,5 +105,15 @@ class User extends Authenticatable
     public function posts(): HasMany
     {
         return $this->hasMany(Post::class);
+    }
+
+    /**
+     * Relacionamento: um usuário pode possuir muitas experiências.
+     *
+     * @return HasMany Relacionamento com a entidade Experience
+     */
+    public function experiences(): HasMany
+    {
+        return $this->hasMany(Experience::class);
     }
 }
