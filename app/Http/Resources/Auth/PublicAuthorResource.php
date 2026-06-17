@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Auth;
 
 use App\Http\Resources\Experience\ExperienceResource;
+use App\Http\Resources\Skill\SkillResource;
 use App\Support\AuthorMap;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -24,7 +25,9 @@ class PublicAuthorResource extends JsonResource
             'profile_photo_url' => $this->profile_photo
                 ? asset('storage/' . $this->profile_photo)
                 : null,
-
+            'skills' => SkillResource::collection(
+                $this->whenLoaded('skills')
+            ),
             'experiences' => ExperienceResource::collection(
                 $this->whenLoaded('experiences')
             ),

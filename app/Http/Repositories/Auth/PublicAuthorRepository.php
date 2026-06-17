@@ -10,6 +10,7 @@ class PublicAuthorRepository
     {
         return User::query()
             ->with('experiences')
+            ->with('skills')
             ->find($id);
     }
 }

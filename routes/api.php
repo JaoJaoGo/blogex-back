@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\Auth\ProfileController;
 use App\Http\Controllers\Auth\PublicAuthorController;
 use App\Http\Controllers\Experience\ExperienceController;
+use App\Http\Controllers\Skill\SkillController;
 use App\Http\Controllers\Post\PostController;
 use App\Http\Controllers\Tag\TagIconController;
 use App\Http\Controllers\Tag\TagController;
@@ -108,6 +109,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [ExperienceController::class, 'store']);
         Route::put('/{id}', [ExperienceController::class, 'update'])->whereNumber('id');
         Route::delete('/{id}', [ExperienceController::class, 'destroy'])->whereNumber('id');
+    });
+
+    Route::prefix('me/skills')->group(function () {
+        Route::get('/', [SkillController::class, 'index']);
+        Route::post('/', [SkillController::class, 'store']);
+        Route::put('/{id}', [SkillController::class, 'update'])->whereNumber('id');
+        Route::delete('/{id}', [SkillController::class, 'destroy'])->whereNumber('id');
     });
 
     /**

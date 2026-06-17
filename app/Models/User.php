@@ -116,4 +116,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Experience::class);
     }
+
+    /**
+     * Relacionamento: um usuário pode possuir muitas habilidades.
+     *
+     * @return HasMany Relacionamento com a entidade Skill
+     */
+    public function skills(): HasMany
+    {
+        return $this->hasMany(Skill::class);
+    }
 }
