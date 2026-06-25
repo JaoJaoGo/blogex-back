@@ -17,16 +17,35 @@ jobs:
     steps:
       - name: Configurar SSH
         env:
-          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
           VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
         run: |
+          if [ -z "$VPS_HOST" ]; then
+            echo "VPS_HOST não está configurado nos secrets."
+            exit 1
+          fi
+
+          if [ -z "$VPS_USER" ]; then
+            echo "VPS_USER não está configurado nos secrets."
+            exit 1
+          fi
+
+          if [ -z "$VPS_SSH_KEY" ]; then
+            echo "VPS_SSH_KEY não está configurado nos secrets."
+            exit 1
+          fi
+
           mkdir -p ~/.ssh
-      
-          echo "$VPS_SSH_KEY" > ~/.ssh/blogex_key
+
+          printf '%s\n' "$VPS_SSH_KEY" > ~/.ssh/blogex_key
           chmod 600 ~/.ssh/blogex_key
-      
+
           ssh-keyscan -H "$VPS_HOST" >> ~/.ssh/known_hosts
 
       - name: Executar deploy na VPS
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
         run: |
-          ssh -i ~/.ssh/blogex_key ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "cd /var/www/blogex && ./deploy.sh"
+          ssh -i ~/.ssh/blogex_key "$VPS_USER@$VPS_HOST" "cd /var/www/blogex && ./deploy.sh"
