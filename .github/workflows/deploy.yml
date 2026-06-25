@@ -1,0 +1,27 @@
+name: Deploy Blogex
+
+on:
+  push:
+    branches:
+      - master
+
+concurrency:
+  group: blogex-production-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy production
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Configurar SSH
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/blogex_key
+          chmod 600 ~/.ssh/blogex_key
+          ssh-keyscan -H "${{ secrets.VPS_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Executar deploy na VPS
+        run: |
+          ssh -i ~/.ssh/blogex_key ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "cd /var/www/blogex && ./deploy.sh"
