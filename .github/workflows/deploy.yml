@@ -16,11 +16,16 @@ jobs:
 
     steps:
       - name: Configurar SSH
+        env:
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_HOST: ${{ secrets.VPS_HOST }}
         run: |
           mkdir -p ~/.ssh
-          printf '%s\n' "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/blogex_key
+      
+          echo "$VPS_SSH_KEY" > ~/.ssh/blogex_key
           chmod 600 ~/.ssh/blogex_key
-          ssh-keyscan -H "${{ secrets.VPS_HOST }}" >> ~/.ssh/known_hosts
+      
+          ssh-keyscan -H "$VPS_HOST" >> ~/.ssh/known_hosts
 
       - name: Executar deploy na VPS
         run: |
