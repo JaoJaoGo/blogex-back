@@ -36,7 +36,7 @@ class TagRepository
             )
             ->orderBy(
                 $filters['sort'] ?? 'id',
-                $filters['direction'] ?? 'desc'
+                $filters['direction'] ?? 'asc'
             )
             ->paginate($filters['per_page'] ?? 10);
     }

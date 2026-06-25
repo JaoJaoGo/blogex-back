@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources\Post;
 
+use App\Models\User;
+use App\Support\AuthorMap;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -27,11 +29,21 @@ class PostListResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $userId = AuthorMap::userIdFromAuthor($this->author);
+
+        $user = $userId ? User::query()->find($userId) : null;
+
         return [
             'id' => $this->id,
             'title' => $this->title,
             'image' => $this->image,
             'author' => $this->author,
+            
+            'user' => [
+                'id' => $user?->id,
+                'name' => $user?->name,
+                'profile_photo_url' => $user?->profile_photo ? asset('storage/' . $user->profile_photo) : null,
+            ],
 
             'tags' => $this->whenLoaded('tags', fn () =>
                 $this->tags->map(fn ($tag) => [

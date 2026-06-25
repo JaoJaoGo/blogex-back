@@ -87,7 +87,7 @@ class ListTagsRequest extends FormRequest
             // Ordenação
             'sort' => [
                 'sometimes',
-                Rule::in(['name']),
+                Rule::in(['id']),
             ],
             'direction' => [
                 'sometimes',
