@@ -1,4 +1,4 @@
-name: Deploy Blogex
+name: Deploy Back Blogex
 
 on:
   push:
