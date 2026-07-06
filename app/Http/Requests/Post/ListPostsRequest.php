@@ -3,8 +3,8 @@
 namespace App\Http\Requests\Post;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 /**
  * Class ListPostsRequest
@@ -48,6 +48,7 @@ class ListPostsRequest extends FormRequest
             'perPage' => 'per_page',
             'sortBy' => 'sort',
             'sortDirection' => 'direction',
+            'isDraft' => 'is_draft',
         ];
 
         foreach ($mapped as $from => $to) {
@@ -66,6 +67,14 @@ class ListPostsRequest extends FormRequest
             $input['direction'] = Str::snake($input['direction']);
         }
 
+        if (array_key_exists('is_draft', $input)) {
+            $input['is_draft'] = filter_var(
+                $input['is_draft'],
+                FILTER_VALIDATE_BOOLEAN,
+                FILTER_NULL_ON_FAILURE
+            );
+        }
+
         $this->replace($input);
     }
 
@@ -80,15 +89,13 @@ class ListPostsRequest extends FormRequest
             // Paginação
             'page' => ['sometimes', 'integer', 'min:1'],
             'per_page' => ['sometimes', 'integer', 'min:1', 'max:100'],
-
             // Busca textual
             'search' => ['sometimes', 'string', 'max:255'],
-
             // Filtros
             'author' => ['sometimes', 'string', 'max:255'],
             'tags' => ['sometimes', 'array'],
             'tags.*' => ['string', 'max:50'],
-
+            'is_draft' => ['sometimes', 'boolean'],
             // Ordenação
             'sort' => [
                 'sometimes',
@@ -110,7 +117,7 @@ class ListPostsRequest extends FormRequest
     {
         $data = parent::validated($key, $default);
 
-        if ($key !== null || ! is_array($data)) {
+        if ($key !== null || !is_array($data)) {
             return $data;
         }
 
@@ -122,7 +129,7 @@ class ListPostsRequest extends FormRequest
         // Normaliza tags
         if (isset($data['tags'])) {
             $data['tags'] = collect($data['tags'])
-                ->map(fn ($tag) => trim(mb_strtolower($tag)))
+                ->map(fn($tag) => trim(mb_strtolower($tag)))
                 ->unique()
                 ->values()
                 ->toArray();

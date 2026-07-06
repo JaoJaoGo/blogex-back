@@ -39,6 +39,7 @@ class StorePostRequest extends FormRequest
      * - title: título do post (obrigatório)
      * - subtitle: sub-título do post (opcional)
      * - content: conteúdo do post (obrigatório)
+     * - is_draft: se o post está como rascunho (opcional, padrão false)
      * - image: imagem do post (opcional)
      * - author: autor do post (obrigatório)
      * - tags: tags do post (obrigatório, pelo menos 1)
@@ -51,6 +52,7 @@ class StorePostRequest extends FormRequest
             'title' => ['required', 'string', 'max:255'],
             'subtitle' => ['nullable', 'string', 'max:255'],
             'content' => ['required', 'string'],
+            'is_draft' => ['sometimes', 'boolean'],
             'image' => ['nullable', 'image', 'max:2048'],
             'author' => ['required', 'string', 'max:255'],
 

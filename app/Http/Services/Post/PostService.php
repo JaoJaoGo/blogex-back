@@ -32,6 +32,10 @@ class PostService
             throw new ModelNotFoundException('Post não encontrado.');
         }
 
+        if ($post->is_draft && !auth()->check()) {
+            throw new ModelNotFoundException('Post não encontrado.');
+        }
+
         return $post;
     }
 

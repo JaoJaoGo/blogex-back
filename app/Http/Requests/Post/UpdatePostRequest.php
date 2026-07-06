@@ -56,6 +56,7 @@ class UpdatePostRequest extends FormRequest
      * - title: título do post (opcional)
      * - subtitle: sub-título do post (opcional)
      * - content: conteúdo do post (opcional)
+     * - is_draft: se o post está como rascunho (opcional)
      * - image: imagem do post (opcional)
      * - author: autor do post (opcional)
      * - tags: tags do post (obrigatório, pelo menos 1)
@@ -68,6 +69,7 @@ class UpdatePostRequest extends FormRequest
             'title' => ['sometimes', 'string', 'max:255'],
             'subtitle' => ['nullable', 'string', 'max:255'],
             'content' => ['sometimes', 'string'],
+            'is_draft' => ['sometimes', 'boolean'],
             'author' => ['sometimes', 'string', 'max:255'],
             // Upload
             'image' => ['nullable', 'image', 'max:2048'],

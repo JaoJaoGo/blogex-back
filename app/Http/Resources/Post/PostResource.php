@@ -38,6 +38,7 @@ class PostResource extends JsonResource
             'title' => $this->title,
             'subtitle' => $this->subtitle,
             'content' => $this->content,
+            'isDraft' => (bool) $this->is_draft,
             'image' => $this->image,
             'author' => $this->author,
             'user' => [

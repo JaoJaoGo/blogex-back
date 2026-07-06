@@ -24,6 +24,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property string|null $subtitle
  * @property string|null $tags
  * @property string $content
+ * @property bool $is_draft
  * @property string $author
  * @property string|null $image
  * @property \Illuminate\Support\Carbon|null $deleted_at
@@ -60,6 +61,7 @@ class Post extends Model
         'title',
         'subtitle',
         'content',
+        'is_draft',
         'author',
         'image',
     ];
@@ -73,6 +75,7 @@ class Post extends Model
     {
         return [
             'deleted_at' => 'datetime',
+            'is_draft' => 'boolean',
         ];
     }
 

@@ -7,36 +7,36 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 /**
  * Class PostRepository
- * 
+ *
  * Repositório responsável pelo acesso e persistência
  * de dados relacionados à entidade {@see Post}.
- * 
+ *
  * Esta camada abstrai o uso direto do Eloquent,
  * permitindo desacoplamento da regra de negócio,
  * maior testabilidade e facilidade de manutenção.
- * 
+ *
  * @package App\Http\Repositories\Post
  */
 class PostRepository
 {
     /**
      * Retorna uma paginação de posts com base nos filtros.
-     * 
+     *
      * @param array $filters Filtros de paginação
-     * 
+     *
      * @return LengthAwarePaginator
      */
     public function paginate(array $filters): LengthAwarePaginator
     {
-        return Post::query()
+        $query = Post::query()
             ->with('tags')
             ->when(
                 $filters['author'] ?? null,
-                fn ($q, $author) => $q->where('author', $author)
+                fn($q, $author) => $q->where('author', $author)
             )
             ->when(
                 $filters['search'] ?? null,
-                fn ($q, $search) =>
+                fn($q, $search) =>
                     $q->where(function ($subQuery) use ($search) {
                         $subQuery
                             ->where('title', 'like', "%{$search}%")
@@ -46,10 +46,19 @@ class PostRepository
             ->when(
                 $filters['tags'] ?? null,
                 fn($q, $tags) =>
-                    $q->whereHas('tags', 
-                        fn ($t) => $t->whereIn('name', $tags)
-                    )
-            )
+                    $q->whereHas('tags',
+                        fn($t) => $t->whereIn('name', $tags))
+            );
+
+        if (!auth()->check()) {
+            $query->where('is_draft', false);
+        }
+
+        if (auth()->check() && array_key_exists('is_draft', $filters)) {
+            $query->where('is_draft', (bool) $filters['is_draft']);
+        }
+
+        return $query
             ->orderBy(
                 $filters['sort'] ?? 'created_at',
                 $filters['direction'] ?? 'desc'
@@ -59,9 +68,9 @@ class PostRepository
 
     /**
      * Busca um post pelo ID.
-     * 
+     *
      * @param int $id ID do post
-     * 
+     *
      * @return Post|null
      */
     public function findById(int $id): ?Post
@@ -73,9 +82,9 @@ class PostRepository
 
     /**
      * Cria um novo post.
-     * 
+     *
      * @param array $data Dados do post
-     * 
+     *
      * @return Post
      */
     public function create(array $data): Post
@@ -85,24 +94,24 @@ class PostRepository
 
     /**
      * Atualiza um post.
-     * 
+     *
      * @param Post $post Post a ser atualizado
      * @param array $data Dados do post
-     * 
+     *
      * @return Post
      */
     public function update(Post $post, array $data): Post
     {
         $post->update($data);
-        
+
         return $post;
     }
 
     /**
      * Deleta um post.
-     * 
+     *
      * @param Post $post Post a ser deletado
-     * 
+     *
      * @return void
      */
     public function delete(Post $post): void

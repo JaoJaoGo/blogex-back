@@ -3,8 +3,8 @@
 namespace App\Http\Requests\Tag;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 /**
  * Class ListTagsRequest
@@ -80,14 +80,14 @@ class ListTagsRequest extends FormRequest
             // Paginação
             'page' => ['sometimes', 'integer', 'min:1'],
             'per_page' => ['sometimes', 'integer', 'min:1', 'max:100'],
-
             // Busca textual
             'search' => ['sometimes', 'string', 'max:255'],
-
+            // Filtros
+            'author' => ['sometimes', 'string', 'max:255'],
             // Ordenação
             'sort' => [
                 'sometimes',
-                Rule::in(['id']),
+                Rule::in(['id', 'name']),
             ],
             'direction' => [
                 'sometimes',
@@ -105,7 +105,7 @@ class ListTagsRequest extends FormRequest
     {
         $data = parent::validated($key, $default);
 
-        if ($key !== null || ! is_array($data)) {
+        if ($key !== null || !is_array($data)) {
             return $data;
         }
 

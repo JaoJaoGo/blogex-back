@@ -38,6 +38,8 @@ class PostListResource extends JsonResource
             'title' => $this->title,
             'image' => $this->image,
             'author' => $this->author,
+
+            'isDraft' => (bool) $this->is_draft,
             
             'user' => [
                 'id' => $user?->id,
