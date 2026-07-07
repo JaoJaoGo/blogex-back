@@ -1,7 +1,7 @@
 <?php
 
 use App\Jobs\ClearCompletedTodosJob;
-use App\Jobs\ClearOrphanPostContentImagesJob;
+use App\Jobs\ClearOrphanPostContentMediasJob;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
@@ -12,12 +12,12 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Schedule::job(new ClearOrphanPostContentImagesJob)
+Schedule::job(new ClearOrphanPostContentMediasJob)
     ->dailyAt('03:00')
-    ->name('clear-orphan-post-content-images')
+    ->name('clear-orphan-post-content-media')
     ->withoutOverlapping()
     ->when(function () {
-        $lastCleanupAt = Cache::get('post_content_images:last_orphan_cleanup_at');
+        $lastCleanupAt = Cache::get('post_content_media:last_orphan_cleanup_at');
 
         if (!$lastCleanupAt) {
             return true;

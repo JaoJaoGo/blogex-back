@@ -10,7 +10,7 @@ class TodoRepository
     public function listForUser(int $userId, array $filters = []): Collection
     {
         return Todo::query()
-            ->with('user')
+            ->with(['user', 'checklists'])
             ->where('user_id', $userId)
             ->when(
                 $filters['status'] ?? null,
@@ -45,7 +45,7 @@ class TodoRepository
     public function findById(int $id): ?Todo
     {
         return Todo::query()
-            ->with('user')
+            ->with(['user', 'checklists'])
             ->find($id);
     }
 

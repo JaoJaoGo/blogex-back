@@ -5,7 +5,7 @@ namespace App\Http\Services\Post;
 use App\Models\Post;
 use App\Models\Tag;
 use App\Http\Repositories\Post\PostRepository;
-use App\Http\Services\Post\PostContentImageService;
+use App\Http\Services\Post\PostContentMediaService;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -16,7 +16,7 @@ class PostService
 {
     public function __construct(
         protected PostRepository $repository,
-        protected PostContentImageService $postContentImageService,
+        protected PostContentMediaService $PostContentMediaService,
     ) {}
 
     public function list(array $filters): LengthAwarePaginator
@@ -100,7 +100,7 @@ class PostService
 
             $post->refresh();
 
-            $this->postContentImageService->deleteRemovedImages(
+            $this->PostContentMediaService->deleteRemovedMedia(
                 oldContent: $oldContent,
                 newContent: $post->content,
                 postId: $post->id,
@@ -123,7 +123,7 @@ class PostService
                 Storage::disk('public')->delete($post->image);
             }
 
-            $this->postContentImageService->deleteAllFromContent(
+            $this->PostContentMediaService->deleteAllFromContent(
                 content: $post->content,
                 postId: $post->id,
             );

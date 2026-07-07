@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use DOMDocument;
 
-class PostContentImageService
+class PostContentMediaService
 {
     public function store(UploadedFile $image): array
     {
@@ -17,13 +17,18 @@ class PostContentImageService
             'public'
         );
 
+        $mimeType = $image->getMimeType();
+        $type = Str::startsWith($mimeType, 'video/') ? 'video' : 'image';
+
         return [
             'path' => $path,
             'url' => asset('storage/' . $path),
+            'type' => $type,
+            'mimeType' => $mimeType,
         ];
     }
 
-    public function deleteRemovedImages(
+    public function deleteRemovedMedia(
         ?string $oldContent,
         ?string $newContent,
         ?int $postId = null
@@ -58,7 +63,7 @@ class PostContentImageService
             });
     }
 
-    public function deleteOrphanImages(int $minimumAgeDays = 1): int
+    public function deleteOrphanMedia(int $minimumAgeDays = 1): int
     {
         $deleted = 0;
 
@@ -81,6 +86,14 @@ class PostContentImageService
         return $deleted;
     }
 
+    /**
+     * Compatibilidade com o nome antigo.
+     */
+    public function deleteOrphanImages(int $minimumAgeDays = 1): int
+    {
+        return $this->deleteOrphanMedia($minimumAgeDays);
+    }
+
     private function extractPublicStoragePaths(?string $html): array
     {
         if (!$html) {
@@ -100,20 +113,22 @@ class PostContentImageService
 
         $paths = [];
 
-        foreach ($dom->getElementsByTagName('img') as $image) {
-            $src = $image->getAttribute('src');
+        foreach (['img', 'video', 'source'] as $tagName) {
+            foreach ($dom->getElementsByTagName($tagName) as $node) {
+                $src = $node->getAttribute('src');
 
-            $path = $this->extractPathFromImageSource($src);
+                $path = $this->extractPathFromMediaSource($src);
 
-            if ($path) {
-                $paths[] = $path;
+                if ($path) {
+                    $paths[] = $path;
+                }
             }
         }
 
         return $paths;
     }
 
-    private function extractPathFromImageSource(?string $src): ?string
+    private function extractPathFromMediaSource(?string $src): ?string
     {
         if (!$src) {
             return null;

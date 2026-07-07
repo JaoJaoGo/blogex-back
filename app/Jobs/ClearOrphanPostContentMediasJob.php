@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Http\Services\Post\PostContentImageService;
+use App\Http\Services\Post\PostContentMediaService;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -21,21 +21,21 @@ class ClearOrphanPostContentImagesJob implements ShouldQueue, ShouldBeUnique
 
     public function uniqueId(): string
     {
-        return 'clear-orphan-post-content-images';
+        return 'clear-orphan-post-content-media';
     }
 
-    public function handle(PostContentImageService $postContentImageService): void
+    public function handle(PostContentMediaService $postContentMediaService): void
     {
-        $deleted = $postContentImageService->deleteOrphanImages(
+        $deleted = $postContentMediaService->deleteOrphanMedia(
             minimumAgeDays: 1
         );
 
         Cache::forever(
-            'post_content_images:last_orphan_cleanup_at',
+            'post_content_media:last_orphan_cleanup_at',
             now()->toDateTimeString()
         );
 
-        Log::info('Limpeza de imagens órfãs do conteúdo dos posts finalizada.', [
+        Log::info('Limpeza de mídias órfãs do conteúdo dos posts finalizada.', [
             'deleted' => $deleted,
         ]);
     }

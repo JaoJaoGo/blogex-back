@@ -25,10 +25,16 @@ class StoreTodoRequest extends FormRequest
     {
         return [
             'title' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string', 'max:5000'],
             'priority' => ['required', Rule::in(Todo::priorities())],
             'status' => ['sometimes', Rule::in(Todo::statuses())],
             'starts_at' => ['required', 'date'],
             'due_at' => ['nullable', 'date', 'after_or_equal:starts_at'],
+
+            'checklists' => ['sometimes', 'array'],
+            'checklists.*.title' => ['required', 'string', 'max:255'],
+            'checklists.*.is_completed' => ['sometimes', 'boolean'],
+            'checklists.*.position' => ['sometimes', 'integer', 'min:0'],
         ];
     }
 }
