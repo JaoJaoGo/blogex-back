@@ -9,7 +9,7 @@ use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
-class ClearOrphanPostContentImagesJob implements ShouldQueue, ShouldBeUnique
+class ClearOrphanPostContentMediasJob implements ShouldQueue, ShouldBeUnique
 {
     use Queueable;
 
