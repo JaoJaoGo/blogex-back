@@ -14,6 +14,7 @@ use App\Http\Controllers\Post\PostController;
 use App\Http\Controllers\Post\PostContentImageController;
 use App\Http\Controllers\Tag\TagIconController;
 use App\Http\Controllers\Tag\TagController;
+use App\Http\Controllers\Todo\TodoController;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
 
@@ -150,5 +151,20 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [TagController::class, 'store']);
         Route::put('/{id}', [TagController::class, 'update'])->whereNumber('id');
         Route::delete('/{id}', [TagController::class, 'destroy'])->whereNumber('id');
+    });
+
+    /**
+     * Rotas de Todo
+     *
+     * Rotas protegidas que permitem o gerenciamento de todos
+     * pelo usuário autenticado.
+     */
+    Route::prefix('todos')->group(function () {
+        Route::get('/', [TodoController::class, 'index']);
+        Route::post('/', [TodoController::class, 'store']);
+        Route::get('/{id}', [TodoController::class, 'show'])->whereNumber('id');
+        Route::put('/{id}', [TodoController::class, 'update'])->whereNumber('id');
+        Route::patch('/{id}/status', [TodoController::class, 'updateStatus'])->whereNumber('id');
+        Route::delete('/{id}', [TodoController::class, 'destroy'])->whereNumber('id');
     });
 });
