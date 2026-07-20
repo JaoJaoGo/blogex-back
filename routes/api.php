@@ -13,6 +13,7 @@ use App\Http\Controllers\Skill\SkillController;
 use App\Http\Controllers\Post\PostController;
 use App\Http\Controllers\Post\PostContentImageController;
 use App\Http\Controllers\Post\PostContentMediaController;
+use App\Http\Controllers\Post\PostLinkPreviewController;
 use App\Http\Controllers\Tag\TagIconController;
 use App\Http\Controllers\Tag\TagController;
 use App\Http\Controllers\Todo\TodoController;
@@ -140,6 +141,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/{id}', [PostController::class, 'update'])->whereNumber('id');
         Route::delete('/{id}', [PostController::class, 'destroy'])->whereNumber('id');
         Route::post('/content-media', [PostContentMediaController::class, 'store']);
+        Route::post('/link-preview', [PostLinkPreviewController::class, 'show']);
     });
 
     /**
