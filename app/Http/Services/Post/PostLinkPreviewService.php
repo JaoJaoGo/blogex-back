@@ -15,7 +15,8 @@ class PostLinkPreviewService
 
         $this->ensureSafeUrl($url);
 
-        $response = Http::timeout(6)
+        $response = Http::connectTimeout(5)
+            ->timeout(20)
             ->withHeaders([
                 'User-Agent' => 'BlogexLinkPreview/1.0',
                 'Accept' => 'text/html,application/xhtml+xml',
